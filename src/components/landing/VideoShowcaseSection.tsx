@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import ScrollReveal from "../ScrollReveal";
+import ContactModal from "../ContactModal";
 import { ChevronLeft, ChevronRight, Play, ExternalLink } from "lucide-react";
 
 interface VideoSlot {
@@ -135,9 +136,11 @@ const VideoShowcaseSection = () => {
         {/* CTA buttons */}
         <ScrollReveal delay={0.2}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-            <a href="#contact" className="btn-primary group">
-              Request a Physical Visit
-            </a>
+            <ContactModal>
+              <button className="btn-primary group">
+                Request a Physical Visit
+              </button>
+            </ContactModal>
             <a
               href="https://www.youtube.com/playlist?list=PL5gB5kNB2iq31_cOhI2j6I1uXXSnRLmUE"
               target="_blank"

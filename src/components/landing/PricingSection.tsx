@@ -28,7 +28,7 @@ const models = [
   },
 ];
 
-const WHATSAPP_URL = `https://wa.me/8801922036882?text=${encodeURIComponent("Hi, I'd like to discuss pricing and deployment options.")}`;
+const WHATSAPP_URL = `https://wa.me/8801922036882?text=${encodeURIComponent("Hi, I'd like to discuss pricing and deployment options of Machines by SOHUB.")}`;
 
 const PricingSection = () => (
   <section id="pricing" className="section-padding">

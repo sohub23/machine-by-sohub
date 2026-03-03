@@ -9,8 +9,8 @@ import dashboardImg from "@/assets/dashboard-ecosystem.jpg";
 
 const addOns = [
   { id: "chiller", name: "Built-in Chiller Unit", price: 35000, desc: "Refrigeration module for cold beverages and dairy products." },
-  { id: "cashless", name: "Cashless Payment Module", price: 25000, desc: "bKash, Nagad, and card payment integration hardware." },
-  { id: "screen", name: "Touchscreen Display Upgrade", price: 20000, desc: "7-inch interactive touchscreen for product selection and promotions." },
+  { id: "cashless", name: "POS Payment Module", price: 25000, desc: "Card payment integration hardware." },
+  { id: "screen", name: "Touchscreen Display Upgrade", price: 20000, desc: "Starts with 10-inch interactive touchscreen display for product selection and promotions." },
   { id: "telemetry", name: "Advanced Telemetry Kit", price: 15000, desc: "Enhanced sensors for temperature, humidity, and stock-level precision." },
   { id: "branding", name: "Custom Branding Wrap", price: 12000, desc: "Full machine vinyl wrap with your company branding and colors." },
 ];
@@ -18,11 +18,11 @@ const addOns = [
 const backendPlan = { name: "SOHUB Backend Platform", price: 5000, period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
 
 const specs = [
-  { label: "Capacity", value: "60–120 items (configurable)" },
+  { label: "Capacity", value: "360-520 items (Configurable)" },
   { label: "Power", value: "220V / 50Hz" },
-  { label: "Dimensions", value: "183cm × 100cm × 85cm" },
-  { label: "Weight", value: "~180 kg" },
-  { label: "Payment", value: "Cash + optional cashless" },
+  { label: "Dimensions", value: "183cm × 75cm × 78cm" },
+  { label: "Gross Weight", value: "~250 kg" },
+  { label: "Payment", value: "Digital Payment Only" },
   { label: "Connectivity", value: "4G SIM + WiFi" },
 ];
 

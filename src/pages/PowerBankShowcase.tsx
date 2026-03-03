@@ -7,7 +7,7 @@ import { Check, ArrowRight, Battery, MapPin, Smartphone, Shield } from "lucide-r
 
 const features = [
   { icon: Battery, title: "Grab-and-Go Rental", desc: "Users pick up a fully charged power bank, use it anywhere, and return it to any station in the network." },
-  { icon: Smartphone, title: "Mobile Payment", desc: "Deposit-free rental via bKash, Nagad, or card. No app download required—scan and go." },
+  { icon: Smartphone, title: "Mobile Payment", desc: "Deposit-free rental via bKash, or card. No app download required—scan and go." },
   { icon: MapPin, title: "Multi-Station Network", desc: "Return to any station. The system tracks which unit is where, charge levels, and availability." },
   { icon: Shield, title: "Anti-Theft & Tracking", desc: "Non-return detection, usage time limits, and automated penalty handling built into the platform." },
 ];

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Monitor, CreditCard, Wifi, Headphones, ArrowRight, MessageCircle } from "lucide-react";
+import { Monitor, CreditCard, Wifi, Headphones, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero-machines.jpg";
 
 const machineTypes = [
@@ -30,8 +30,6 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
-const WHATSAPP_NUMBER = "8801XXXXXXXXX"; // Replace with actual number
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi, I'm interested in SOHUB machine deployment.")}`;
 
 const HeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -145,17 +143,6 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent" />
       </div>
     </motion.div>
-
-    {/* Floating WhatsApp Button */}
-    <a
-      href={WHATSAPP_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 bg-accent text-accent-foreground rounded-full p-3 md:p-4 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-      aria-label="Chat on WhatsApp"
-    >
-      <MessageCircle size={26} />
-    </a>
   </section>
   );
 };
