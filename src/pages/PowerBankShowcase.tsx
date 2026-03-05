@@ -24,10 +24,44 @@ const useCases = [
 const PowerBankShowcase = () => {
   const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", location: "", useCase: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    
+    try {
+      const response = await fetch('http://202.59.208.112/websites/machine-by-sohub/dist/api/send-contact-email.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          phone: form.phone,
+          email: form.email,
+          location: form.location,
+          useCase: form.useCase,
+          machineType: 'Power Bank Rental Station'
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setForm({ name: '', company: '', phone: '', email: '', location: '', useCase: '', message: '' });
+        }, 3000);
+      } else {
+        alert('Failed to submit request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Contact submission error:', error);
+      alert('Failed to submit request. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -186,7 +220,19 @@ const PowerBankShowcase = () => {
                     <label className="text-sm font-medium mb-1.5 block">Intended Use Case *</label>
                     <textarea required rows={3} value={form.useCase} onChange={e => setForm({...form, useCase: e.target.value})} placeholder="Where would you deploy power bank stations?" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none" />
                   </div>
-                  <button type="submit" className="btn-primary w-full">Submit Interest Request</button>
+                  <button type="submit" disabled={loading} className="btn-primary w-full">
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Interest Request'
+                    )}
+                  </button>
                 </form>
               )}
             </ScrollReveal>
@@ -194,6 +240,16 @@ const PowerBankShowcase = () => {
         </section>
       </main>
       <Footer />
+      
+      {/* Toast Notification */}
+      {submitted && (
+        <div className="fixed top-4 right-4 z-50 animate-fade-in">
+          <div className="bg-accent text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">
+            <Check size={20} />
+            <span className="font-medium">Request submitted successfully!</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

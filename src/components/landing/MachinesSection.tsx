@@ -5,7 +5,7 @@ import vendingImg from "@/assets/sohub-snacks.png";
 import smartFridgeImg from "@/assets/sohub-omama-v2.png";
 import lockerImg from "@/assets/sohub-locker-v1.png";
 import powerbankImg from "@/assets/sohub-power-bank-v1.png";
-import clawImg from "@/assets/sohub-clowee-v1.png";
+import clawImg from "@/assets/sohub-clowee.png";
 
 interface MachineItem {
   img: string;
@@ -37,18 +37,22 @@ const MachinesSection = () => (
 
       {/* Featured: first machine large */}
       <ScrollReveal>
-        <div className="card-interactive group mb-8">
+        <div className="card-interactive mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            <div className="aspect-[4/3] lg:aspect-auto overflow-hidden bg-secondary">
+            <div className="aspect-[4/3] lg:aspect-auto overflow-hidden bg-secondary group">
               <img src={machines[0].img} alt={machines[0].title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
             </div>
             <div className="p-8 md:p-10 flex flex-col justify-center">
               <span className="text-xs font-semibold uppercase tracking-wider text-accent mb-3">{machines[0].badge}</span>
               <h3 className="heading-card text-2xl mb-3">{machines[0].title}</h3>
               <p className="body-base text-sm mb-6">{machines[0].desc}</p>
-              <Link to={machines[0].href} className="inline-flex items-center gap-1 text-sm font-semibold text-accent group-hover:gap-2 transition-all w-fit">
-                Configure & Order <ArrowRight size={14} />
+              <Link to={machines[0].href} className="btn-primary group text-sm px-4 py-2 w-fit">
+                Configure & Order
+                <ArrowRight size={12} className="ml-2 transition-transform group-hover:translate-x-1" />
               </Link>
+              {/*<Link to={machines[0].href} className="inline-flex items-center gap-1 text-sm font-semibold text-accent group-hover:gap-2 transition-all w-fit">
+                Configure & Order <ArrowRight size={14} />
+              </Link> */}
             </div>
           </div>
         </div>
@@ -58,8 +62,8 @@ const MachinesSection = () => (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {machines.slice(1).map((m, i) => (
           <ScrollReveal key={m.title} delay={i * 0.08}>
-            <div className="card-interactive h-full group">
-              <div className="aspect-[4/3] overflow-hidden bg-secondary">
+            <div className="card-interactive h-full">
+              <div className="aspect-[4/3] overflow-hidden bg-secondary group">
                 <img src={m.img} alt={m.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               </div>
               <div className="p-5">
@@ -67,12 +71,12 @@ const MachinesSection = () => (
                 <h3 className="font-semibold text-sm mb-2">{m.title}</h3>
                 <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{m.desc}</p>
                 {m.linkType === "external" ? (
-                  <a href={m.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent group-hover:gap-2 transition-all">
-                    Learn more <ExternalLink size={12} />
+                  <a href={m.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:gap-2 transition-all group">
+                    Learn more <ExternalLink size={12} className="transition-transform group-hover:translate-x-1" />
                   </a>
                 ) : (
-                  <Link to={m.href} className="inline-flex items-center gap-1 text-xs font-semibold text-accent group-hover:gap-2 transition-all">
-                    Learn more <ArrowRight size={12} />
+                  <Link to={m.href} className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:gap-2 transition-all group">
+                    Learn more <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
                   </Link>
                 )}
               </div>

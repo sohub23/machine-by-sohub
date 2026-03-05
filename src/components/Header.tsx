@@ -114,7 +114,7 @@ const Header = () => {
             </a>
             <DropdownMenu modal={false} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-sm hover:bg-transparent hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 flex items-center gap-1">
+                <Button variant="ghost" size="sm" className="text-[12px] sm:text-sm text-muted-foreground hover:bg-transparent hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 flex items-center gap-1 mr-[-1rem] sm:mr-0">
                   Our Initiatives
                   {dropdownOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </Button>
@@ -160,12 +160,12 @@ const Header = () => {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="bg-background/80 backdrop-blur-md border-b border-border/50"
       >
-      <div className="section-container flex items-center justify-between h-16 md:h-18">
+      <div className="section-container flex items-center justify-between h-14 md:h-14">
         <Link to="/" className="flex items-center" onClick={handleLogoClick}>
           <img 
             src="/logo/machine-by-sohub.png" 
             alt="Machine by SOHUB" 
-            className="h-10 w-auto"
+            className="h-7 md:h-10 w-auto"
           />
         </Link>
 

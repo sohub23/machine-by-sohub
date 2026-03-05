@@ -1,29 +1,58 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Check, ArrowRight, Plus, Minus, ShoppingBag, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, ArrowRight, Plus, Minus, ShoppingBag, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import vendingImg from "@/assets/machine-vending.jpg";
 import dashboardImg from "@/assets/dashboard-ecosystem.jpg";
+import importedMachineImg from "@/assets/sohub-snacks-imported.png";
+import localMachineImg from "@/assets/sohub-snacks-local.png";
+
+interface VideoSlot {
+  title: string;
+  youtubeId: string;
+}
+
+const videos: VideoSlot[] = [
+  { title: "Snack Vending Machines at Huawei", youtubeId: "4835onrVx34" },
+  { title: "Local Build Snack Vending Machines", youtubeId: "chWoJsI6XgY" },
+  { title: "Veinding Machine Assembly ", youtubeId: "RlywkUl-TCg" },
+  { title: "POS Payment", youtubeId: "fZHZeiDbxpU" },
+];
 
 const addOns = [
   { id: "chiller", name: "Built-in Chiller Unit", price: 35000, desc: "Refrigeration module for cold beverages and dairy products." },
-  { id: "cashless", name: "POS Payment Module", price: 25000, desc: "Card payment integration hardware." },
-  { id: "screen", name: "Touchscreen Display Upgrade", price: 20000, desc: "Starts with 10-inch interactive touchscreen display for product selection and promotions." },
-  { id: "telemetry", name: "Advanced Telemetry Kit", price: 15000, desc: "Enhanced sensors for temperature, humidity, and stock-level precision." },
+  { id: "cashless", name: "POS Payment Module", price: 5000, desc: "Card payment integration hardware." },
+  { id: "screen", name: "Touchscreen Display Upgrade", price: 10000, desc: "Starts with 10-inch interactive touchscreen display for product selection and promotions." },
+  { id: "telemetry", name: "Advanced Telemetry Kit", price: 5000, desc: "Enhanced sensors for temperature, humidity, and stock-level precision." },
   { id: "branding", name: "Custom Branding Wrap", price: 12000, desc: "Full machine vinyl wrap with your company branding and colors." },
 ];
 
 const backendPlan = { name: "SOHUB Backend Platform", price: 5000, period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
 
-const specs = [
-  { label: "Capacity", value: "360-520 items (Configurable)" },
-  { label: "Power", value: "220V / 50Hz" },
+const importedSpecs = [
   { label: "Dimensions", value: "183cm × 75cm × 78cm" },
-  { label: "Gross Weight", value: "250 kg" },
-  { label: "Payment", value: "Digital Payment Only" },
+  { label: "Display", value: "10-inch Touchscreen, Android 11" },
+  { label: "Capacity", value: "300 SKU 6 Layers" },
+  { label: "Spring", value: "Single & Double" },
+  { label: "Product", value: "Snacks and Drinks" },
+  { label: "Chiller Temp.", value: "4-25°C" },
+  { label: "Gas", value: "R290" },
   { label: "Connectivity", value: "4G SIM + WiFi" },
+  { label: "Payment", value: "Cashless Payment" },
+  { label: "Material", value: "Metal, Glass & PVC" },
+  { label: "Power", value: "220V / 460W (Chiller)" },
+  { label: "Gross Weight", value: "250 kg" },
+];
+
+const localSpecs = [
+  { label: "Capacity", value: "200-300 SKU" },
+  { label: "Product", value: "Snacks and Drinks" },
+  { label: "Connectivity", value: "WiFi" },
+  { label: "Material", value: "Metal + Glass" },
+  { label: "Dimensions", value: "183cm × 75cm × 78cm" },
+  { label: "Payment", value: "Cashless Payment Only" },
 ];
 
 const SnackVendingPage = () => {
@@ -34,8 +63,12 @@ const SnackVendingPage = () => {
   const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", location: "", notes: "" });
   const [submitted, setSubmitted] = useState(false);
   const [machineType, setMachineType] = useState<"imported" | "local">("imported");
+  const [loading, setLoading] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
 
-  const basePrice = machineType === "imported" ? 450000 : 380000;
+  const basePrice = machineType === "imported" ? 340000 : 250000;
   const addOnTotal = selectedAddOns.reduce((sum, id) => {
     const addon = addOns.find(a => a.id === id);
     if (!addon) return sum;
@@ -51,9 +84,93 @@ const SnackVendingPage = () => {
 
   const formatPrice = (n: number) => `৳${n.toLocaleString("en-BD")}`;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Auto-scroll for videos
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const startAutoScroll = () => {
+      autoScrollRef.current = setInterval(() => {
+        if (!el) return;
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft >= maxScroll - 10) {
+          el.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          el.scrollBy({ left: 340, behavior: "smooth" });
+        }
+      }, 4000);
+    };
+
+    startAutoScroll();
+
+    const stopAutoScroll = () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    };
+    const resumeAutoScroll = () => {
+      stopAutoScroll();
+      startAutoScroll();
+    };
+
+    el.addEventListener("mouseenter", stopAutoScroll);
+    el.addEventListener("mouseleave", resumeAutoScroll);
+    el.addEventListener("touchstart", stopAutoScroll);
+    el.addEventListener("touchend", resumeAutoScroll);
+
+    return () => {
+      stopAutoScroll();
+      el.removeEventListener("mouseenter", stopAutoScroll);
+      el.removeEventListener("mouseleave", resumeAutoScroll);
+      el.removeEventListener("touchstart", stopAutoScroll);
+      el.removeEventListener("touchend", resumeAutoScroll);
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    
+    try {
+      const apiUrl = 'http://202.59.208.112/websites/machine-by-sohub/dist/api/send-order-email.php';
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          phone: form.phone,
+          email: form.email,
+          location: form.location,
+          notes: form.notes,
+          machineType,
+          quantity,
+          addOns: selectedAddOns.map(id => addOns.find(a => a.id === id)?.name || id),
+          totalPrice,
+          unitPrice
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitted(true);
+        // Reset form and go back to configure after 3 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+          setStep('configure');
+          setForm({ name: '', company: '', phone: '', email: '', location: '', notes: '' });
+          setSelectedAddOns([]);
+          setQuantity(1);
+        }, 3000);
+      } else {
+        alert('Failed to submit order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Order submission error:', error);
+      alert('Failed to submit order. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,27 +230,43 @@ const SnackVendingPage = () => {
               </div>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  { id: "chWoJsI6XgY", title: "Machine Assembly & Build" },
-                  { id: "RlywkUl-TCg", title: "Vending Operations Demo" },
-                ].map(v => (
-                  <div key={v.id} className="rounded-2xl overflow-hidden border border-border bg-card shadow-md">
-                    <div className="aspect-video">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${v.id}`}
-                        title={v.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                        loading="lazy"
-                      />
+              <div className="relative">
+                {/* Scroll buttons */}
+                <button onClick={() => {
+                  const container = document.getElementById('snack-videos-scroll');
+                  if (container) container.scrollBy({ left: -340, behavior: 'smooth' });
+                }} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-secondary transition-colors hidden md:flex">
+                  <ChevronLeft size={18} />
+                </button>
+                <button onClick={() => {
+                  const container = document.getElementById('snack-videos-scroll');
+                  if (container) container.scrollBy({ left: 340, behavior: 'smooth' });
+                }} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-secondary transition-colors hidden md:flex">
+                  <ChevronRight size={18} />
+                </button>
+
+                {/* Scrollable container */}
+                <div ref={scrollRef} id="snack-videos-scroll" className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                  {videos.map(v => (
+                    <div key={v.youtubeId} className="flex-shrink-0 w-[calc(50%-12px)] md:w-[calc(50%-12px)] snap-start">
+                      <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+                        <div className="aspect-video">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${v.youtubeId}`}
+                            title={v.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="w-full h-full"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <p className="text-sm font-semibold">{v.title}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <p className="text-sm font-semibold">{v.title}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </ScrollReveal>
           </div>
@@ -150,7 +283,7 @@ const SnackVendingPage = () => {
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {specs.map(s => (
+                {importedSpecs.map(s => (
                   <div key={s.label} className="p-5 rounded-xl bg-secondary/50 border border-border/50">
                     <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{s.label}</p>
                     <p className="font-semibold">{s.value}</p>
@@ -223,7 +356,7 @@ const SnackVendingPage = () => {
                               <span className="font-medium">Imported Chassis</span>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">Premium imported chassis with advanced features</p>
-                            <span className="text-lg font-bold">{formatPrice(450000)}</span>
+                           <span className="text-lg font-bold text-right block">৳340,000</span>
                           </button>
                           <button
                             onClick={() => setMachineType("local")}
@@ -236,34 +369,40 @@ const SnackVendingPage = () => {
                               <span className="font-medium">Local Build</span>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">Locally manufactured with SOHUB integration</p>
-                            <span className="text-lg font-bold">{formatPrice(380000)}</span>
+                            <span className="text-lg font-bold text-right block">{formatPrice(250000)}</span>
                           </button>
                         </div>
                       </div>
 
                       {/* Base */}
                       <div className="p-6 rounded-2xl border border-border bg-card">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold text-lg">Snack Vending Machine</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{machineType === "imported" ? "Premium imported chassis with cashless payment support" : "Locally built with SOHUB integration and cashless payment support"}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                          <div className="md:col-span-9">
+                            <h3 className="font-semibold text-lg mb-3">Snack Vending Machine ({machineType === "imported" ? "Imported Chassis" : "Locally Built"})</h3>
+                            <button onClick={() => setShowSpecs(!showSpecs)} className="flex items-center gap-1 text-xs text-accent mb-3 hover:underline">
+                              {showSpecs ? "Hide" : "View"} specifications {showSpecs ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                            </button>
+                            <AnimatePresence>
+                              {showSpecs && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-border/50">
+                                    {(machineType === "imported" ? importedSpecs : localSpecs).map(s => (
+                                      <div key={s.label} className="text-xs"><span className="text-muted-foreground">{s.label}:</span> <span className="font-medium">{s.value}</span></div>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
-                          <span className="text-xl font-bold">{formatPrice(basePrice)}</span>
+                          <div className="md:col-span-3 flex justify-center">
+                            <img 
+                              src={machineType === "imported" ? importedMachineImg : localMachineImg} 
+                              alt="Machine" 
+                              className="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" 
+                              onClick={() => setShowImageModal(true)}
+                            />
+                          </div>
                         </div>
-                        <button onClick={() => setShowSpecs(!showSpecs)} className="flex items-center gap-1 text-xs text-accent mt-3 hover:underline">
-                          {showSpecs ? "Hide" : "View"} specifications {showSpecs ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                        </button>
-                        <AnimatePresence>
-                          {showSpecs && (
-                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                              <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border/50">
-                                {specs.map(s => (
-                                  <div key={s.label} className="text-xs"><span className="text-muted-foreground">{s.label}:</span> <span className="font-medium">{s.value}</span></div>
-                                ))}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
                       </div>
 
                       {/* Add-ons */}
@@ -382,14 +521,26 @@ const SnackVendingPage = () => {
                       <label className="text-sm font-medium mb-1.5 block">Additional Notes</label>
                       <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any specific requirements or questions" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none" />
                     </div>
-                    <button type="submit" className="btn-primary w-full">Submit Order Request</button>
+                    <button type="submit" disabled={loading} className="btn-primary w-full">
+                      {loading ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit Order Request'
+                      )}
+                    </button>
                     <p className="text-xs text-muted-foreground text-center">Our team will contact you within 1 business day to confirm details and payment.</p>
                   </form>
                 </motion.div>
               )}
 
               {submitted && (
-                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-lg mx-auto">
+                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-lg mx-auto" style={{ display: 'none' }}>
                   <div className="card-clean text-center py-16">
                     <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
                       <Check size={36} className="text-accent" />
@@ -405,6 +556,35 @@ const SnackVendingPage = () => {
         </section>
       </main>
       <Footer />
+      
+      {/* Image Modal */}
+      {showImageModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowImageModal(false)}>
+          <div className="relative max-w-2xl max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={machineType === "imported" ? importedMachineImg : localMachineImg} 
+              alt="Machine" 
+              className="w-full h-full object-contain rounded-lg"
+            />
+            <button 
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Toast Notification */}
+      {submitted && (
+        <div className="fixed top-4 right-4 z-50 animate-fade-in">
+          <div className="bg-accent text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">
+            <Check size={20} />
+            <span className="font-medium">Successfully submitted!</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,12 +10,42 @@ interface ContactModalProps {
 const ContactModal = ({ children }: ContactModalProps) => {
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you soon.");
-    setForm({ name: "", phone: "", message: "" });
-    setOpen(false);
+    setLoading(true);
+    
+    try {
+      const response = await fetch('http://202.59.208.112/websites/machine-by-sohub/dist/api/send-contact-email.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: '',
+          company: '',
+          location: '',
+          useCase: form.message || 'Physical visit request',
+          machineType: 'Physical Visit Request'
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        toast.success("Thank you! We'll get back to you soon.");
+        setForm({ name: "", phone: "", message: "" });
+        setOpen(false);
+      } else {
+        toast.error('Failed to submit. Please try again.');
+      }
+    } catch (error) {
+      console.error('Visit request error:', error);
+      toast.error('Failed to submit. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = "w-full rounded-xl border border-border bg-background px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-shadow";
@@ -57,9 +87,21 @@ const ContactModal = ({ children }: ContactModalProps) => {
             value={form.message}
             onChange={(e) => setForm({ ...form, message: e.target.value })}
           />
-          <button type="submit" className="btn-primary w-full py-4 group">
-            Request Visit
-            <Send size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
+          <button type="submit" disabled={loading} className="btn-primary w-full py-4 group">
+            {loading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Submitting...
+              </>
+            ) : (
+              <>
+                Request Visit
+                <Send size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
+              </>
+            )}
           </button>
         </form>
       </DialogContent>

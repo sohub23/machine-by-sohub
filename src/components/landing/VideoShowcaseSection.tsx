@@ -9,13 +9,16 @@ interface VideoSlot {
 }
 
 const videos: VideoSlot[] = [
+  { title: "Snack Vending Machines at Huawei", youtubeId: "4835onrVx34" },
+  { title: "O Mama Launching at SAVOR", youtubeId: "MOJZuKggX2c" },
+  { title: "O Mama Food Platform Overview", youtubeId: "o8ahmgEQtZU" },
+  { title: "How to use O Mama", youtubeId: "h5ylw8PR3_s" },
+  { title: "Local Build Snack Vending Machines", youtubeId: "chWoJsI6XgY" },
   { title: "Power Bank Rental Station", youtubeId: "Y08VPoImhoA" },
   { title: "Smart Locker Vending", youtubeId: "jZk6Zv-q-zw" },
-  { title: "Snack Vending Demo", youtubeId: "4835onrVx34" },
-  { title: "Snack Machine Assembly", youtubeId: "chWoJsI6XgY" },
-  { title: "Vending Operations", youtubeId: "RlywkUl-TCg" },
-  { title: "Smart Fridge Overview", youtubeId: "o8ahmgEQtZU" },
-  { title: "Claw Machine Gameplay", youtubeId: "IOxUbO_gcYE" },
+  { title: "O Mama Supply Chain", youtubeId: "BKgpm7SqQ9I" },
+  { title: "How to Use O Mama", youtubeId: "oarN_-iWc_Y" },
+  { title: "Clowee at Chilox", youtubeId: "IOxUbO_gcYE" },
 ];
 
 const VideoShowcaseSection = () => {
