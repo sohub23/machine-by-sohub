@@ -1,5 +1,6 @@
+import { useState } from "react";
 import ScrollReveal from "../ScrollReveal";
-import { CreditCard, Smartphone, Shield, RotateCcw, FileText, CheckCircle2, Zap } from "lucide-react";
+import { CreditCard, Smartphone, Shield, RotateCcw, FileText, CheckCircle2, Zap, Play } from "lucide-react";
 
 const paymentMethods = [
   { name: "EBL POS", label: "Debit & Credit Cards", highlight: true },
@@ -16,7 +17,10 @@ const features = [
   { icon: Shield, title: "Anti-fraud guardrails", desc: "Transaction limits, velocity checks, and anomaly detection built into every payment flow." },
 ];
 
-const PaymentsSection = () => (
+const PaymentsSection = () => {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  return (
   <section id="payments" className="section-padding section-alt">
     <div className="section-container">
       {/* Header */}
@@ -61,14 +65,39 @@ const PaymentsSection = () => (
         <ScrollReveal direction="right">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
             <div className="aspect-video relative">
-              <iframe
-                src="https://www.youtube.com/embed/fZHZeiDbxpU"
-                title="SOHUB Payment Integration Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-                loading="lazy"
-              />
+              {!isVideoPlaying ? (
+                <div className="group cursor-pointer" onClick={() => setIsVideoPlaying(true)}>
+                  <div className="relative aspect-video bg-muted">
+                    <img
+                      src={`https://img.youtube.com/vi/fZHZeiDbxpU/maxresdefault.jpg`}
+                      alt="SOHUB Payment Integration"
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center group-hover:bg-foreground/50 transition-colors">
+                      <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-8 h-8 text-white fill-current ml-1" />
+                      </div>
+                    </div>
+
+                    {/* Title Badge */}
+                    <div className="absolute bottom-3 left-3 right-3 bg-gradient-to-r from-accent to-accent/80 backdrop-blur-sm rounded px-3 py-2 shadow-lg">
+                      <p className="font-semibold text-white text-sm">
+                        SOHUB Payment Integration Demo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <iframe
+                  src="https://www.youtube.com/embed/fZHZeiDbxpU?autoplay=1"
+                  title="SOHUB Payment Integration Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              )}
             </div>
             <div className="absolute top-3 right-3 bg-accent text-accent-foreground text-xs font-bold px-3 py-1 rounded-full">
               LIVE DEMO
@@ -103,6 +132,7 @@ const PaymentsSection = () => (
       </ScrollReveal>
     </div>
   </section>
-);
+  );
+};
 
 export default PaymentsSection;

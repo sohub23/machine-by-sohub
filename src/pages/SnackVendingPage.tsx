@@ -6,8 +6,13 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { Check, ArrowRight, Plus, Minus, ShoppingBag, ChevronDown, ChevronUp, Play } from "lucide-react";
 import vendingImg from "@/assets/machine-vending.jpg";
 import dashboardImg from "@/assets/dashboard-ecosystem.jpg";
-import importedMachineImg from "@/assets/sohub-snacks-imported.png";
+import importedMachineImg from "@/assets/imported_sv_1.png";
 import localMachineImg from "@/assets/sohub-snacks-local.png";
+import importedSv1 from "@/assets/imported_sv_1.png";
+import importedSv2 from "@/assets/imported_sv_2.png";
+import importedSv3 from "@/assets/imported_sv_3.png";
+import importedSv4 from "@/assets/imported_sv_4.png";
+import importedSv5 from "@/assets/imported_sv_5.png";
 import {
   Carousel,
   CarouselContent,
@@ -73,7 +78,12 @@ const SnackVendingPage = () => {
   const [machineType, setMachineType] = useState<"imported" | "local">("imported");
   const [loading, setLoading] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  const importedImages = [importedSv1, importedSv2, importedSv3, importedSv4, importedSv5];
+  const localImages = [localMachineImg];
+  const currentImages = machineType === "imported" ? importedImages : localImages;
 
   const basePrice = machineType === "imported" ? 340000 : 250000;
   const addOnTotal = selectedAddOns.reduce((sum, id) => {
@@ -90,6 +100,19 @@ const SnackVendingPage = () => {
   };
 
   const formatPrice = (n: number) => `৳${n.toLocaleString("en-BD")}`;
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % currentImages.length);
+  };
+  
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length);
+  };
+
+  const openImageModal = () => {
+    setCurrentImageIndex(0);
+    setShowImageModal(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -362,7 +385,7 @@ const SnackVendingPage = () => {
                               </div>
                               <span className="font-medium">Imported Chassis - (With Chiller)</span>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-2">Premium imported chassis with built-in cooler and SOHUB integration.</p>
+                            <p className="text-sm text-muted-foreground mb-2">Premium imported Chassis with SOHUB integration & chiller suported.</p>
                            <span className="text-lg font-bold text-right block">৳340,000</span>
                           </button>
                           <button
@@ -375,7 +398,7 @@ const SnackVendingPage = () => {
                               </div>
                               <span className="font-medium">Local Build - (Without Chiller)</span>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-2">Manufactured with full SOHUB integration.</p>
+                            <p className="text-sm text-muted-foreground mb-2">Locally manufactured with SOHUB integration.</p>
                             <span className="text-lg font-bold text-right block">{formatPrice(250000)}</span>
                           </button>
                         </div>
@@ -406,7 +429,7 @@ const SnackVendingPage = () => {
                               src={machineType === "imported" ? importedMachineImg : localMachineImg} 
                               alt="Machine" 
                               className="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" 
-                              onClick={() => setShowImageModal(true)}
+                              onClick={openImageModal}
                             />
                           </div>
                         </div>
@@ -567,15 +590,42 @@ const SnackVendingPage = () => {
       {/* Image Modal */}
       {showImageModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowImageModal(false)}>
-          <div className="relative max-w-2xl max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-4xl max-h-[100vh]" onClick={(e) => e.stopPropagation()}>
             <img 
-              src={machineType === "imported" ? importedMachineImg : localMachineImg} 
-              alt="Machine" 
+              src={currentImages[currentImageIndex]} 
+              alt={`Machine ${currentImageIndex + 1}`} 
               className="w-full h-full object-contain rounded-lg"
             />
+            
+            {/* Navigation buttons */}
+            {currentImages.length > 1 && (
+              <>
+                <button 
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+                >
+                  ‹
+                </button>
+                <button 
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+                >
+                  ›
+                </button>
+              </>
+            )}
+            
+            {/* Image counter */}
+            {currentImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {currentImageIndex + 1} / {currentImages.length}
+              </div>
+            )}
+            
+            {/* Close button */}
             <button 
               onClick={() => setShowImageModal(false)}
-              className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
             >
               ×
             </button>
