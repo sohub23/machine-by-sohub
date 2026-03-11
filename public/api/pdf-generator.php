@@ -85,7 +85,7 @@ function generateOrderPDF($name, $company, $phone, $email, $location, $notes, $m
     $pdf->Cell(30, 7, 'Quantity', 1, 0, 'C', true);
     $pdf->Cell(50, 7, 'Price (BDT)', 1, 1, 'R', true);
     
-    $basePrice = $machineType === 'imported' ? 450000 : 380000;
+    $basePrice = $machineType === 'imported' ? 340000 : 250000;
     $machineLabel = $machineType === 'imported' ? 'Snack Vending Machine (Imported)' : 'Snack Vending Machine (Local Build)';
     
     $pdf->SetFont('helvetica', '', 9);
