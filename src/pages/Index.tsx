@@ -10,6 +10,7 @@ import UseCasesSection from "@/components/landing/UseCasesSection";
 import PricingSection from "@/components/landing/PricingSection";
 import FAQSection from "@/components/landing/FAQSection";
 import VideoShowcaseSection from "@/components/landing/VideoShowcaseSection";
+import OurInitiatives from "@/components/landing/OurInitiatives";
 
 const Index = () => (
   <div className="min-h-screen bg-background">
@@ -25,6 +26,7 @@ const Index = () => (
       <UseCasesSection />
       <PricingSection />
       <FAQSection />
+      <OurInitiatives />
     </main>
     <Footer />
   </div>
