@@ -17,7 +17,7 @@ const ContactModal = ({ children }: ContactModalProps) => {
     setLoading(true);
     
     try {
-      const response = await fetch('http://202.59.208.112/websites/machine-by-sohub/dist/api/send-contact-email.php', {
+      const response = await fetch('/api/send-contact-email.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
