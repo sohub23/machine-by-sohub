@@ -44,7 +44,7 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    fetch('https://sohub.netlify.app/api/initiatives.json', {
+    fetch('https://sohub.com.bd/api/initiatives.json', {
       mode: 'cors',
       headers: {
         'Accept': 'application/json'
