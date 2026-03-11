@@ -27,6 +27,14 @@ interface VideoSlot {
   youtubeId: string;
 }
 
+interface MediaItem {
+  type: 'image' | 'video';
+  src?: string;
+  youtubeId?: string;
+  thumbnail?: string;
+  title?: string;
+}
+
 const videos: VideoSlot[] = [
   { title: "Snack Vending Machines at Huawei", youtubeId: "4835onrVx34" },
   { title: "Local Build Snack Vending Machines", youtubeId: "chWoJsI6XgY" },
@@ -35,14 +43,15 @@ const videos: VideoSlot[] = [
 ];
 
 const addOns = [
-  { id: "chiller", name: "Built-in Chiller Unit", price: 35000, desc: "Refrigeration module for cold beverages and dairy products." },
-  { id: "cashless", name: "POS Payment Module", price: 5000, desc: "Card payment integration hardware." },
-  { id: "screen", name: "Touchscreen Display Upgrade", price: 10000, desc: "Starts with 10-inch interactive touchscreen display for product selection and promotions." },
-  { id: "telemetry", name: "Advanced Telemetry Kit", price: 5000, desc: "Enhanced sensors for temperature, humidity, and stock-level precision." },
+  { id: "chiller", name: "Built-in Chiller Unit", price: 40000, desc: "Refrigeration module for cold beverages and dairy products." },
+  { id: "screen", name: "Touchscreen Display Upgrade", price: 18000, desc: "Starts with 10-inch interactive touchscreen display for product selection and promotions." },
+  { id: "cashless", name: "POS Payment Module (EBL)", price: 10000, desc: "Card payment integration hardware." },
+  { id: "gateway", name: "Cashless Payment Gateway Integration", price: "TBD", desc: "SSL, bKash, NFC Card, ID Card payment integration for seamless transactions." },
+  { id: "inventory", name: "Inventory Management Service", price: "TBD", desc: "SOHUB managed inventory service - product refilling, stock monitoring, and maintenance." },
   { id: "branding", name: "Custom Branding Wrap", price: 12000, desc: "Full machine vinyl wrap with your company branding and colors." },
 ];
 
-const backendPlan = { name: "SOHUB Backend Platform", price: 5000, period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
+const backendPlan = { name: "SOHUB Backend Platform", price: "5000 (TBD)", period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
 
 const importedSpecs = [
   { label: "Dimensions", value: "183cm × 75cm × 78cm" },
@@ -81,16 +90,23 @@ const SnackVendingPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  const importedImages = [importedSv1, importedSv2, importedSv3, importedSv4, importedSv5];
-  const localImages = [localMachineImg];
-  const currentImages = machineType === "imported" ? importedImages : localImages;
+  const importedMedia: MediaItem[] = [
+    { type: 'image', src: importedSv1 },
+    { type: 'image', src: importedSv2 },
+    { type: 'image', src: importedSv3 },
+    { type: 'image', src: importedSv4 },
+    { type: 'video', youtubeId: 'Nw8ZLIwRzwo', thumbnail: importedSv5, title: 'Vending Machine' }
+  ];
+  const localMedia: MediaItem[] = [{ type: 'image', src: localMachineImg }];
+  const currentMedia = machineType === "imported" ? importedMedia : localMedia;
 
   const basePrice = machineType === "imported" ? 340000 : 250000;
   const addOnTotal = selectedAddOns.reduce((sum, id) => {
     const addon = addOns.find(a => a.id === id);
     if (!addon) return sum;
-    if (machineType === "local" && id === "chiller") return sum;
-    return sum + addon.price;
+    if (machineType === "local" && (id === "chiller" || id === "screen")) return sum;
+    if (addon.price === "TBD") return sum;
+    return sum + (addon.price as number);
   }, 0);
   const unitPrice = basePrice + addOnTotal;
   const totalPrice = unitPrice * quantity;
@@ -99,14 +115,14 @@ const SnackVendingPage = () => {
     setSelectedAddOns(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
-  const formatPrice = (n: number) => `৳${n.toLocaleString("en-BD")}`;
+  const formatPrice = (n: number) => `${n.toLocaleString("en-BD")} BDT`;
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % currentImages.length);
+    setCurrentImageIndex((prev) => (prev + 1) % currentMedia.length);
   };
   
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + currentImages.length) % currentImages.length);
+    setCurrentImageIndex((prev) => (prev - 1 + currentMedia.length) % currentMedia.length);
   };
 
   const openImageModal = () => {
@@ -175,7 +191,7 @@ const SnackVendingPage = () => {
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse-soft" />
                   Deployed & Available
                 </span>
-                <h1 className="heading-display mt-4">
+                <h1 className="text-[3.75rem] font-bold leading-tight mt-4">
                   Snack Vending{" "}
                   <span className="gradient-text">Machine</span>
                 </h1>
@@ -233,7 +249,237 @@ const SnackVendingPage = () => {
             </div>
           </div>
         </section>
+{/* Configurator */}
+        <section id="purchase" className="section-padding">
+          <div className="section-container max-w-6xl mx-auto">
+            <ScrollReveal>
+              <div className="text-center mb-14">
+                <span className="section-badge">Purchase</span>
+                <h2 className="heading-section">Configure Your Machine</h2>
+                <p className="body-large mt-3">Select your configuration and submit an order request.</p>
+              </div>
+            </ScrollReveal>
 
+            <AnimatePresence mode="wait">
+              {!submitted && step === "configure" && (
+                <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    {/* Left: Options */}
+                    <div className="lg:col-span-3 space-y-6">
+                      {/* Machine Type Selection */}
+                      <div className="p-6 rounded-2xl border border-border bg-card">
+                        <h3 className="font-semibold text-lg mb-4">Machine Type</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <button
+                            onClick={() => setMachineType("imported")}
+                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "imported" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "imported" ? "bg-accent border-accent" : "border-border"}`}>
+                                {machineType === "imported" && <div className="w-2 h-2 rounded-full bg-white" />}
+                              </div>
+                              <span className="font-medium">Imported Chassis - (Chiller Supported)</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">Premium imported Chassis with SOHUB integration & chiller suported.</p>
+                           <span className="text-lg font-bold text-right block">340,000 BDT</span>
+                          </button>
+                          <button
+                            onClick={() => setMachineType("local")}
+                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "local" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "local" ? "bg-accent border-accent" : "border-border"}`}>
+                                {machineType === "local" && <div className="w-2 h-2 rounded-full bg-white" />}
+                              </div>
+                              <span className="font-medium">Local Build - (Chiller Not Supported)</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">Locally manufactured with SOHUB integration.</p>
+                            <span className="text-lg font-bold text-right block">250,000 BDT</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Base */}
+                      <div className="p-6 rounded-2xl border border-border bg-card">
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                          <div className="md:col-span-9">
+                            <h3 className="font-semibold text-lg mb-3">Snack Vending Machine ({machineType === "imported" ? "Imported Chassis" : "Locally Built"})</h3>
+                            <button onClick={() => setShowSpecs(!showSpecs)} className="flex items-center gap-1 text-xs text-accent mb-3 hover:underline">
+                              {showSpecs ? "Hide" : "View"} specifications {showSpecs ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                            </button>
+                            <AnimatePresence>
+                              {showSpecs && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-border/50">
+                                    {(machineType === "imported" ? importedSpecs : localSpecs).map(s => (
+                                      <div key={s.label} className="text-xs"><span className="text-muted-foreground">{s.label}:</span> <span className="font-medium">{s.value}</span></div>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                          <div className="md:col-span-3 flex justify-center">
+                            <img 
+                              src={machineType === "imported" ? importedMachineImg : localMachineImg} 
+                              alt="Machine" 
+                              className="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" 
+                              onClick={openImageModal}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Add-ons */}
+                      <div>
+                        <h3 className="font-semibold mb-3">Customize with Add-Ons</h3>
+                        <div className="space-y-3">
+                          {addOns.filter(a => !(machineType === "local" && (a.id === "chiller" || a.id === "screen"))).map(a => (
+                            <motion.button
+                              key={a.id}
+                              onClick={() => toggleAddOn(a.id)}
+                              className={`w-full text-left p-4 rounded-xl border transition-all ${selectedAddOns.includes(a.id) ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                              whileTap={{ scale: 0.995 }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${selectedAddOns.includes(a.id) ? "bg-accent border-accent" : "border-border"}`}>
+                                    {selectedAddOns.includes(a.id) && <Check size={12} className="text-white" />}
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-sm">{a.name}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{a.desc}</p>
+                                  </div>
+                                </div>
+                                <span className="text-sm font-semibold whitespace-nowrap ml-4">{a.price === "TBD" ? "TBD" : `+${formatPrice(a.price as number)}`}</span>
+                              </div>
+                            </motion.button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Quantity */}
+                      <div className="p-4 rounded-xl border border-border bg-card flex items-center justify-between">
+                        <span className="font-medium">Quantity</span>
+                        <div className="flex items-center gap-4">
+                          <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"><Minus size={16} /></button>
+                          <span className="text-lg font-bold w-8 text-center">{quantity}</span>
+                          <button onClick={() => setQuantity(quantity + 1)} className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"><Plus size={16} /></button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Summary */}
+                    <div className="lg:col-span-2">
+                      <div className="sticky top-24 p-6 rounded-2xl border border-border bg-card space-y-4">
+                        <h3 className="font-semibold text-lg">Order Summary</h3>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between"><span className="text-muted-foreground">{machineType === "imported" ? "Imported chassis" : "Local build"}</span><span>{formatPrice(basePrice)}</span></div>
+                          {selectedAddOns.filter(id => !(machineType === "local" && (id === "chiller" || id === "screen"))).map(id => {
+                            const a = addOns.find(x => x.id === id)!;
+                            return <div key={id} className="flex justify-between"><span className="text-muted-foreground">{a.name}</span><span>{a.price === "TBD" ? "TBD" : formatPrice(a.price as number)}</span></div>;
+                          })}
+                          <div className="border-t border-border/50 pt-2 flex justify-between"><span className="text-muted-foreground">Unit price</span><span className="font-medium">{formatPrice(unitPrice)}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Quantity</span><span>×{quantity}</span></div>
+                        </div>
+                        <div className="border-t border-border pt-3">
+                          <div className="flex justify-between items-baseline">
+                            <span className="font-semibold">Total</span>
+                            <span className="text-2xl font-bold">{formatPrice(totalPrice)}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">+ {backendPlan.price}/month backend per machine</p>
+                        </div>
+                        <button onClick={() => setStep("checkout")} className="btn-primary w-full group">
+                          Continue to Order
+                          <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
+                        </button>
+                        <p className="text-xs text-muted-foreground text-center">This is an order inquiry. Payment details will be confirmed separately.</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {!submitted && step === "checkout" && (
+                <motion.div key="checkout" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto">
+                  <button onClick={() => setStep("configure")} className="text-sm text-accent mb-6 hover:underline flex items-center gap-1">
+                    ← Back to Configuration
+                  </button>
+                  <div className="card-clean mb-6">
+                    <h3 className="font-semibold mb-3 flex items-center gap-2"><ShoppingBag size={18} /> Order Summary</h3>
+                    <div className="text-sm space-y-1 text-muted-foreground">
+                      <p>{quantity}× Snack Vending Machine — {formatPrice(basePrice)} each</p>
+                      {selectedAddOns.map(id => {
+                        const a = addOns.find(x => x.id === id)!;
+                        return <p key={id}>+ {a.name} — {a.price === "TBD" ? "TBD" : formatPrice(a.price as number)}</p>;
+                      })}
+                      <p className="font-semibold text-foreground pt-2 border-t border-border/50 mt-2">Total: {formatPrice(totalPrice)} + {backendPlan.price}/month backend</p>
+                    </div>
+                  </div>
+                  <form onSubmit={handleSubmit} className="card-clean space-y-5">
+                    <h3 className="font-semibold text-lg">Your Details</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 block">Name *</label>
+                        <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 block">Company</label>
+                        <input type="text" value={form.company} onChange={e => setForm({...form, company: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 block">Phone *</label>
+                        <input type="tel" required value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 block">Email</label>
+                        <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1.5 block">Deployment Location *</label>
+                      <input type="text" required value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="City, area, specific location" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1.5 block">Additional Notes</label>
+                      <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any specific requirements or questions" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none" />
+                    </div>
+                    <button type="submit" disabled={loading} className="btn-primary w-full">
+                      {loading ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit Order Request'
+                      )}
+                    </button>
+                    <p className="text-xs text-muted-foreground text-center">Our team will contact you within 1 business day to confirm details and payment.</p>
+                  </form>
+                </motion.div>
+              )}
+
+              {submitted && (
+                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-lg mx-auto" style={{ display: 'none' }}>
+                  <div className="card-clean text-center py-16">
+                    <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                      <Check size={36} className="text-accent" />
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3">Order Request Submitted</h3>
+                    <p className="text-muted-foreground mb-2">Thank you for your interest in the Snack Vending Machine.</p>
+                    <p className="text-sm text-muted-foreground">Our team will review your configuration and contact you within 1 business day to confirm details and arrange payment.</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+        
         {/* Videos */}
         <section className="section-padding section-alt">
           <div className="section-container max-w-4xl mx-auto">
@@ -303,6 +549,7 @@ const SnackVendingPage = () => {
         </section>
 
         {/* Specs */}
+        {false && (
         <section className="section-padding">
           <div className="section-container max-w-4xl mx-auto">
             <ScrollReveal>
@@ -323,7 +570,7 @@ const SnackVendingPage = () => {
             </ScrollReveal>
           </div>
         </section>
-
+              )}
         {/* Backend */}
         <section className="section-padding section-alt">
           <div className="section-container max-w-4xl mx-auto">
@@ -338,7 +585,7 @@ const SnackVendingPage = () => {
                 <div className="p-5 rounded-xl border border-border bg-card">
                   <div className="flex items-baseline justify-between mb-4">
                     <h4 className="font-semibold">{backendPlan.name}</h4>
-                    <span className="text-accent font-bold">{formatPrice(backendPlan.price)}<span className="text-xs text-muted-foreground font-normal">{backendPlan.period}</span></span>
+                    <span className="text-accent font-bold">{backendPlan.price}<span className="text-xs text-muted-foreground font-normal">{backendPlan.period}</span></span>
                   </div>
                   <ul className="space-y-2">
                     {backendPlan.features.map(f => (
@@ -353,279 +600,76 @@ const SnackVendingPage = () => {
             </div>
           </div>
         </section>
-
-        {/* Configurator */}
-        <section id="purchase" className="section-padding">
-          <div className="section-container max-w-6xl mx-auto">
-            <ScrollReveal>
-              <div className="text-center mb-14">
-                <span className="section-badge">Purchase</span>
-                <h2 className="heading-section">Configure Your Machine</h2>
-                <p className="body-large mt-3">Select your configuration and submit an order request.</p>
-              </div>
-            </ScrollReveal>
-
-            <AnimatePresence mode="wait">
-              {!submitted && step === "configure" && (
-                <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                    {/* Left: Options */}
-                    <div className="lg:col-span-3 space-y-6">
-                      {/* Machine Type Selection */}
-                      <div className="p-6 rounded-2xl border border-border bg-card">
-                        <h3 className="font-semibold text-lg mb-4">Machine Type</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <button
-                            onClick={() => setMachineType("imported")}
-                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "imported" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
-                          >
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "imported" ? "bg-accent border-accent" : "border-border"}`}>
-                                {machineType === "imported" && <div className="w-2 h-2 rounded-full bg-white" />}
-                              </div>
-                              <span className="font-medium">Imported Chassis - (With Chiller)</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">Premium imported Chassis with SOHUB integration & chiller suported.</p>
-                           <span className="text-lg font-bold text-right block">৳340,000</span>
-                          </button>
-                          <button
-                            onClick={() => setMachineType("local")}
-                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "local" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
-                          >
-                            <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "local" ? "bg-accent border-accent" : "border-border"}`}>
-                                {machineType === "local" && <div className="w-2 h-2 rounded-full bg-white" />}
-                              </div>
-                              <span className="font-medium">Local Build - (Without Chiller)</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">Locally manufactured with SOHUB integration.</p>
-                            <span className="text-lg font-bold text-right block">{formatPrice(250000)}</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Base */}
-                      <div className="p-6 rounded-2xl border border-border bg-card">
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                          <div className="md:col-span-9">
-                            <h3 className="font-semibold text-lg mb-3">Snack Vending Machine ({machineType === "imported" ? "Imported Chassis" : "Locally Built"})</h3>
-                            <button onClick={() => setShowSpecs(!showSpecs)} className="flex items-center gap-1 text-xs text-accent mb-3 hover:underline">
-                              {showSpecs ? "Hide" : "View"} specifications {showSpecs ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                            </button>
-                            <AnimatePresence>
-                              {showSpecs && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 border-t border-border/50">
-                                    {(machineType === "imported" ? importedSpecs : localSpecs).map(s => (
-                                      <div key={s.label} className="text-xs"><span className="text-muted-foreground">{s.label}:</span> <span className="font-medium">{s.value}</span></div>
-                                    ))}
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                          <div className="md:col-span-3 flex justify-center">
-                            <img 
-                              src={machineType === "imported" ? importedMachineImg : localMachineImg} 
-                              alt="Machine" 
-                              className="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" 
-                              onClick={openImageModal}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Add-ons */}
-                      <div>
-                        <h3 className="font-semibold mb-3">Customize with Add-Ons</h3>
-                        <div className="space-y-3">
-                          {addOns.filter(a => !(machineType === "local" && a.id === "chiller")).map(a => (
-                            <motion.button
-                              key={a.id}
-                              onClick={() => toggleAddOn(a.id)}
-                              className={`w-full text-left p-4 rounded-xl border transition-all ${selectedAddOns.includes(a.id) ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
-                              whileTap={{ scale: 0.995 }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${selectedAddOns.includes(a.id) ? "bg-accent border-accent" : "border-border"}`}>
-                                    {selectedAddOns.includes(a.id) && <Check size={12} className="text-white" />}
-                                  </div>
-                                  <div>
-                                    <p className="font-medium text-sm">{a.name}</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{a.desc}</p>
-                                  </div>
-                                </div>
-                                <span className="text-sm font-semibold whitespace-nowrap ml-4">+{formatPrice(a.price)}</span>
-                              </div>
-                            </motion.button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Quantity */}
-                      <div className="p-4 rounded-xl border border-border bg-card flex items-center justify-between">
-                        <span className="font-medium">Quantity</span>
-                        <div className="flex items-center gap-4">
-                          <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"><Minus size={16} /></button>
-                          <span className="text-lg font-bold w-8 text-center">{quantity}</span>
-                          <button onClick={() => setQuantity(quantity + 1)} className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors"><Plus size={16} /></button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right: Summary */}
-                    <div className="lg:col-span-2">
-                      <div className="sticky top-24 p-6 rounded-2xl border border-border bg-card space-y-4">
-                        <h3 className="font-semibold text-lg">Order Summary</h3>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between"><span className="text-muted-foreground">{machineType === "imported" ? "Imported chassis" : "Local build"}</span><span>{formatPrice(basePrice)}</span></div>
-                          {selectedAddOns.filter(id => !(machineType === "local" && id === "chiller")).map(id => {
-                            const a = addOns.find(x => x.id === id)!;
-                            return <div key={id} className="flex justify-between"><span className="text-muted-foreground">{a.name}</span><span>{formatPrice(a.price)}</span></div>;
-                          })}
-                          <div className="border-t border-border/50 pt-2 flex justify-between"><span className="text-muted-foreground">Unit price</span><span className="font-medium">{formatPrice(unitPrice)}</span></div>
-                          <div className="flex justify-between"><span className="text-muted-foreground">Quantity</span><span>×{quantity}</span></div>
-                        </div>
-                        <div className="border-t border-border pt-3">
-                          <div className="flex justify-between items-baseline">
-                            <span className="font-semibold">Total</span>
-                            <span className="text-2xl font-bold">{formatPrice(totalPrice)}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">+ {formatPrice(backendPlan.price)}/month backend per machine</p>
-                        </div>
-                        <button onClick={() => setStep("checkout")} className="btn-primary w-full group">
-                          Continue to Order
-                          <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
-                        </button>
-                        <p className="text-xs text-muted-foreground text-center">This is an order inquiry. Payment details will be confirmed separately.</p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {!submitted && step === "checkout" && (
-                <motion.div key="checkout" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto">
-                  <button onClick={() => setStep("configure")} className="text-sm text-accent mb-6 hover:underline flex items-center gap-1">
-                    ← Back to Configuration
-                  </button>
-                  <div className="card-clean mb-6">
-                    <h3 className="font-semibold mb-3 flex items-center gap-2"><ShoppingBag size={18} /> Order Summary</h3>
-                    <div className="text-sm space-y-1 text-muted-foreground">
-                      <p>{quantity}× Snack Vending Machine — {formatPrice(basePrice)} each</p>
-                      {selectedAddOns.map(id => {
-                        const a = addOns.find(x => x.id === id)!;
-                        return <p key={id}>+ {a.name} — {formatPrice(a.price)}</p>;
-                      })}
-                      <p className="font-semibold text-foreground pt-2 border-t border-border/50 mt-2">Total: {formatPrice(totalPrice)} + {formatPrice(backendPlan.price * quantity)}/month backend</p>
-                    </div>
-                  </div>
-                  <form onSubmit={handleSubmit} className="card-clean space-y-5">
-                    <h3 className="font-semibold text-lg">Your Details</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium mb-1.5 block">Name *</label>
-                        <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium mb-1.5 block">Company</label>
-                        <input type="text" value={form.company} onChange={e => setForm({...form, company: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium mb-1.5 block">Phone *</label>
-                        <input type="tel" required value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium mb-1.5 block">Email</label>
-                        <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium mb-1.5 block">Deployment Location *</label>
-                      <input type="text" required value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="City, area, specific location" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30" />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium mb-1.5 block">Additional Notes</label>
-                      <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any specific requirements or questions" className="w-full px-4 py-3 rounded-xl bg-secondary border border-border text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none" />
-                    </div>
-                    <button type="submit" disabled={loading} className="btn-primary w-full">
-                      {loading ? (
-                        <>
-                          <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Submitting...
-                        </>
-                      ) : (
-                        'Submit Order Request'
-                      )}
-                    </button>
-                    <p className="text-xs text-muted-foreground text-center">Our team will contact you within 1 business day to confirm details and payment.</p>
-                  </form>
-                </motion.div>
-              )}
-
-              {submitted && (
-                <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-lg mx-auto" style={{ display: 'none' }}>
-                  <div className="card-clean text-center py-16">
-                    <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
-                      <Check size={36} className="text-accent" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3">Order Request Submitted</h3>
-                    <p className="text-muted-foreground mb-2">Thank you for your interest in the Snack Vending Machine.</p>
-                    <p className="text-sm text-muted-foreground">Our team will review your configuration and contact you within 1 business day to confirm details and arrange payment.</p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
+        
       </main>
       <Footer />
       
-      {/* Image Modal */}
+      {/* Media Modal */}
       {showImageModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowImageModal(false)}>
-          <div className="relative max-w-4xl max-h-[100vh]" onClick={(e) => e.stopPropagation()}>
-            <img 
-              src={currentImages[currentImageIndex]} 
-              alt={`Machine ${currentImageIndex + 1}`} 
-              className="w-full h-full object-contain rounded-lg"
-            />
+          <div className="relative max-w-4xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
+            {currentMedia[currentImageIndex]?.type === 'video' ? (
+              <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  key={currentImageIndex}
+                  src={`https://www.youtube.com/embed/${(currentMedia[currentImageIndex] as any).youtubeId}?autoplay=1&rel=0`}
+                  title={(currentMedia[currentImageIndex] as any).title || 'Machine Video'}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            ) : (
+              <img 
+                src={currentMedia[currentImageIndex]?.src} 
+                alt={`Machine ${currentImageIndex + 1}`} 
+                className="w-full h-full object-contain rounded-lg"
+              />
+            )}
             
             {/* Navigation buttons */}
-            {currentImages.length > 1 && (
+            {currentMedia.length > 1 && (
               <>
                 <button 
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-colors text-xl font-bold z-10"
                 >
                   ‹
                 </button>
                 <button 
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-colors text-xl font-bold z-10"
                 >
                   ›
                 </button>
               </>
             )}
             
-            {/* Image counter */}
-            {currentImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {currentImages.length}
+            {/* Media counter and type indicator */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 z-10">
+              {currentMedia[currentImageIndex]?.type === 'video' && (
+                <span className="text-red-400">▶️</span>
+              )}
+              {currentMedia[currentImageIndex]?.type === 'image' && (
+                <span className="text-blue-400">🖼️</span>
+              )}
+              <span>{currentImageIndex + 1} / {currentMedia.length}</span>
+              <span className="text-gray-300 ml-1">
+                {currentMedia[currentImageIndex]?.type === 'video' ? 'Video' : 'Image'}
+              </span>
+            </div>
+            
+            {/* Video title for videos */}
+            {currentMedia[currentImageIndex]?.type === 'video' && (
+              <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded text-sm z-10">
+                {(currentMedia[currentImageIndex] as any).title}
               </div>
             )}
             
             {/* Close button */}
             <button 
               onClick={() => setShowImageModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+              className="absolute top-4 right-4 w-10 h-10 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-colors text-xl font-bold z-10"
             >
               ×
             </button>

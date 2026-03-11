@@ -78,7 +78,7 @@ const PowerBankShowcase = () => {
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse-soft" />
                   Ready to Deploy
                 </span>
-                <h1 className="heading-display mt-4">
+                <h1 className="text-[3.75rem] font-bold leading-tight mt-4">
                   Power Bank{" "}
                   <span className="gradient-text">Rental Stations</span>
                 </h1>
