@@ -28,13 +28,13 @@ const QRExpandable = ({ size = 'md' }: { size?: 'sm' | 'md' }) => {
           onClick={() => setExpanded(true)}
           className={`bg-white rounded-xl ${containerPad} shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 relative group cursor-pointer transition-transform hover:scale-105`}
         >
-          <img src={hotscanQR} alt="Scan to Call SOHUB" className={`${imgSize} object-contain`} />
+          <img src={hotscanQR} alt="Call with Hotscan" className={`${imgSize} object-contain`} />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 rounded-xl transition-colors flex items-center justify-center">
             <Maximize2 className="w-4 h-4 text-[#fb8a09] opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </button>
         <div>
-          <p className={`${size === 'sm' ? 'text-[11px]' : 'text-xs'} font-medium text-primary-foreground/60`}>Scan to<br/>Call Us</p>
+          <p className={`${size === 'sm' ? 'text-[11px]' : 'text-xs'} font-medium text-primary-foreground/60`}>Call With<br/>Hotscan</p>
           <p className={`${size === 'sm' ? 'text-[9px]' : 'text-[10px]'} text-primary-foreground/40 mt-0.5`}>Tap to enlarge</p>
         </div>
       </div>
@@ -56,10 +56,10 @@ const QRExpandable = ({ size = 'md' }: { size?: 'sm' | 'md' }) => {
               <X className="w-4 h-4 text-gray-600" />
             </button>
             <div className="text-center">
-              <p className="text-[16px] font-semibold text-[#202124] mb-1">Scan to Call Us</p>
+              <p className="text-[16px] font-semibold text-[#202124] mb-1">Call With Hotscan</p>
               <p className="text-[13px] text-[#5f6368] mb-5">Point your phone camera at this QR code</p>
               <div className="bg-[#f8f9fa] rounded-2xl p-6 inline-block border border-gray-100">
-                <img src={hotscanQR} alt="Scan to Call SOHUB" className="w-56 h-56 object-contain" />
+                <img src={hotscanQR} alt="Call With Hotscan" className="w-56 h-56 object-contain" />
               </div>
               <p className="text-[12px] text-[#5f6368] mt-4">SOHUB — Solution Hub Technologies</p>
             </div>
