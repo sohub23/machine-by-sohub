@@ -51,7 +51,7 @@ const addOns = [
   { id: "branding", name: "Custom Branding Wrap", price: 12000, desc: "Full machine vinyl wrap with your company branding and colors." },
 ];
 
-const backendPlan = { name: "SOHUB Backend Platform", price: "5000 (TBD)", period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
+const backendPlan = { name: "SOHUB Backend Platform", price: "5000", period: "/month", features: ["Real-time sales dashboard", "Inventory & refill alerts", "Health monitoring & error logs", "Remote controls (restart/lock/disable)", "Daily reconciliation reports", "Role-based operator access"] };
 
 const importedSpecs = [
   { label: "Dimensions", value: "183cm × 75cm × 78cm" },
@@ -135,7 +135,7 @@ const SnackVendingPage = () => {
     setLoading(true);
     
     try {
-      const apiUrl = '/api/send-order-email.php';
+      const apiUrl = 'http://202.59.208.112/websites/machine-by-sohub/dist/api/send-order-email.php';
       
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -149,9 +149,17 @@ const SnackVendingPage = () => {
           notes: form.notes,
           machineType,
           quantity,
-          addOns: selectedAddOns.map(id => addOns.find(a => a.id === id)?.name || id),
+          addOns: selectedAddOns.map(id => {
+            const addon = addOns.find(a => a.id === id);
+            return {
+              id: addon?.id || id,
+              name: addon?.name || id,
+              price: addon?.price || 0
+            };
+          }),
           totalPrice,
-          unitPrice
+          unitPrice,
+          basePrice
         })
       });
       
@@ -387,7 +395,7 @@ const SnackVendingPage = () => {
                             <span className="font-semibold">Total</span>
                             <span className="text-2xl font-bold">{formatPrice(totalPrice)}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">+ {backendPlan.price}/month backend per machine</p>
+                          <p className="text-xs text-muted-foreground mt-1">+ {backendPlan.price}/month backend per machine - TBD</p>
                         </div>
                         <button onClick={() => setStep("checkout")} className="btn-primary w-full group">
                           Continue to Order
@@ -413,7 +421,7 @@ const SnackVendingPage = () => {
                         const a = addOns.find(x => x.id === id)!;
                         return <p key={id}>+ {a.name} — {a.price === "TBD" ? "TBD" : formatPrice(a.price as number)}</p>;
                       })}
-                      <p className="font-semibold text-foreground pt-2 border-t border-border/50 mt-2">Total: {formatPrice(totalPrice)} + {backendPlan.price}/month backend</p>
+                      <p className="font-semibold text-foreground pt-2 border-t border-border/50 mt-2">Total: {formatPrice(totalPrice)} + {backendPlan.price}/month backend - TBD</p>
                     </div>
                   </div>
                   <form onSubmit={handleSubmit} className="card-clean space-y-5">
@@ -596,6 +604,7 @@ const SnackVendingPage = () => {
                     ))}
                   </ul>
                 </div>
+                <p className="text-sm text-accent font-medium mt-3">* To Be Discussed (TBD)</p>
               </ScrollReveal>
             </div>
           </div>
