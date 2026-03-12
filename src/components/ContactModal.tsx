@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
 
@@ -59,8 +59,8 @@ const ContactModal = ({ children }: ContactModalProps) => {
         <DialogHeader className="text-center">
           <div className="text-center">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-medium">Get Started</span>
-            <h2 className="text-xl font-bold mb-3 mt-3">Ready to deploy?</h2>
-            <p className="text-sm text-muted-foreground mb-4">Tell us what you need and we'll take it from there.</p>
+            <DialogTitle className="text-xl font-bold mb-3 mt-3">Ready to deploy?</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mb-4">Tell us what you need and we'll take it from there.</DialogDescription>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">

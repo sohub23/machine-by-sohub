@@ -91,21 +91,27 @@ const HeroSection = () => {
       </motion.p>
 
       <motion.div
-        className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6"
+        className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
-        <a href="#machines" className="btn-primary group w-full sm:w-auto" onClick={(e) => {
+        <a href="#machines" className="btn-primary group w-full sm:w-auto touch-manipulation" onClick={(e) => {
           e.preventDefault();
-          document.querySelector("#machines")?.scrollIntoView({ behavior: "smooth" });
+          const element = document.querySelector("#machines");
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }}>
           Explore Machines
           <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
         </a>
-        <a href="#video-showcase" className="btn-secondary w-full sm:w-auto" onClick={(e) => {
+        <a href="#video-showcase" className="btn-secondary w-full sm:w-auto touch-manipulation" onClick={(e) => {
           e.preventDefault();
-          document.querySelector("#video-showcase")?.scrollIntoView({ behavior: "smooth" });
+          const element = document.querySelector("#video-showcase");
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }}>
           Get a Demo
         </a>

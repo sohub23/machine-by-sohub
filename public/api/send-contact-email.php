@@ -56,10 +56,10 @@ $company = $data['company'] ?? '';
 $phone = $data['phone'] ?? '';
 $email = $data['email'] ?? '';
 $location = $data['location'] ?? '';
-$useCase = $data['useCase'] ?? '';
+$useCase = $data['useCase'] ?? 'General inquiry';
 $machineType = $data['machineType'] ?? 'Smart Locker';
 
-if (empty($name) || empty($phone) || empty($useCase)) {
+if (empty($name) || empty($phone)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Required fields missing']);
     exit;

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation V3 Template</title>
+    <!-- Fonts: Lora for Serif headers/titles, Inter for Sans-Serif body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f6f5f2; /* Soft beige/gray background */
+            --primary-red: #ff5454; /* Coral/Red color for title and highlights */
+            --text-dark: #222222;
+            --font-serif: 'Lora', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px;
+            background-color: #e2e8f0; /* Gray background just for viewing the page */
+        }
+        
+        /* A4 Page Container */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm 20mm;
+            margin: 0 auto;
+            background: var(--bg-color);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Utility Classes */
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .items-end { align-items: flex-end; }
+        .items-center { align-items: center; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .font-serif { font-family: var(--font-serif); }
+        .font-sans { font-family: var(--font-sans); }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-red { color: var(--primary-red); }
+        .text-sm { font-size: 11px; line-height: 1.4; }
+        .text-xs { font-size: 9px; line-height: 1.4; color: #444; }
+        .mb-1 { margin-bottom: 4px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .mb-8 { margin-bottom: 32px; }
+        .mt-2 { margin-top: 8px; }
+        .mt-4 { margin-top: 16px; }
+        .mt-8 { margin-top: 32px; }
+
+        /* Header Logo Placeholder */
+        .logo-img {
+            height: 40px;
+            margin-bottom: 30px;
+        }
+
+        /* Quotation Title */
+        .quote-title {
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Customer & Date Headers */
+        .section-header {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        
+        .date-header {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Customer Block */
+        .info-block p {
+            margin: 0 0 2px 0;
+            font-size: 10px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        /* Dotted Line Style */
+        .line-with-dots {
+            position: relative;
+            width: 100%;
+            height: 1.5px;
+            background-color: var(--text-dark);
+            margin: 8px 0;
+        }
+        
+        .line-with-dots::before, .line-with-dots::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: var(--text-dark);
+            border-radius: 50%;
+        }
+        
+        .line-with-dots::before { left: 0; }
+        .line-with-dots::after { right: 0; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .items-table {
+            margin-top: 24px;
+        }
+
+        .items-table th {
+            font-family: var(--font-serif);
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+            padding: 4px 8px;
+            padding-bottom: 12px;
+        }
+        
+        .items-table td {
+            padding: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .items-table th.center, .items-table td.center { text-align: center; }
+        .items-table th.right, .items-table td.right { text-align: right; }
+
+        .item-row td {
+            padding-top: 12px;
+        }
+        
+        /* Totals Block */
+        .totals-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+            margin-bottom: 24px;
+        }
+
+        .totals-table-wrapper {
+            width: 250px;
+        }
+
+        .totals-table {
+            width: 100%;
+        }
+
+        .totals-table td.label {
+            font-family: var(--font-serif);
+            font-size: 14px;
+            font-weight: 500;
+            text-align: left;
+            padding: 8px;
+        }
+        
+        .totals-table td.value {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            text-align: right;
+            padding: 8px;
+        }
+
+        /* Notes Block */
+        .notes-block {
+            font-size: 9px;
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+        .notes-block p {
+            margin: 0 0 3px 0;
+        }
+
+        /* Terms */
+        .terms-header {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .terms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .terms-list li {
+            position: relative;
+            padding-left: 12px;
+            font-size: 9px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 4px;
+        }
+
+        .terms-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 3.5px;
+            height: 3.5px;
+            background-color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .footer p { margin: 0 0 6px 0; }
+        
+        .powered-by {
+            position: absolute;
+            bottom: 20mm;
+            right: 20mm;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: 10px;
+        }
+        
+        .powered-by-logo {
+            font-family: var(--font-sans);
+            color: #f59e0b; /* Orange text to simulate logo */
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        /* Print adjustments */
+        @media print {
+            body { background: white; padding: 0; }
+            .page { box-shadow: none; width: 100%; height: 100%; padding: 20mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header Logo -->
+        <img src="public/logo/machine-by-sohub.png" alt="Machine by SOHUB" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <h1 style="display:none; font-family:var(--font-sans); font-weight:300; font-size:32px; margin-top:0;">machine<br><span style="font-weight:bold; font-size:20px;">by sohub</span></h1>
+
+        <!-- Quotation Title -->
+        <div class="font-serif text-red quote-title">Quotation No: 123456</div>
+
+        <!-- Quote Info -->
+        <div class="flex justify-between items-end mb-8">
+            <div class="info-block">
+                <div class="font-serif section-header">Customer Details</div>
+                <p>Name: Sunnyat Ali</p>
+                <p>Company: SOHUB</p>
+                <div class="flex" style="gap:24px;">
+                    <p>Email:</p>
+                    <p>| Phone:</p>
+                </div>
+                <p>Location:</p>
+            </div>
+            <div class="font-serif date-header">
+                Date: 11.03.2026
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="items-table">
+            <table cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="50%">Particulars</th>
+                        <th class="center" width="15%">Qty.</th>
+                        <th class="center" width="15%">Unit Price</th>
+                        <th class="right" width="20%">Total</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="line-with-dots"></div>
+            <table cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr class="item-row">
+                        <td width="50%">Snack Vending Machine (Imported)</td>
+                        <td class="center" width="15%">1</td>
+                        <td class="center" width="15%">10.00</td>
+                        <td class="right" width="20%">100.00</td>
+                    </tr>
+                    <tr>
+                        <td>+ POS Payment Module</td>
+                        <td class="center">1</td>
+                        <td class="center">8.00</td>
+                        <td class="right">144.00</td>
+                    </tr>
+                    <tr>
+                        <td>+ Touchscreen Display Upgrade</td>
+                        <td class="center">1</td>
+                        <td class="center">12.00</td>
+                        <td class="right">60.00</td>
+                    </tr>
+                    <tr>
+                        <td>+ Built-in Chiller Unit</td>
+                        <td class="center">1</td>
+                        <td class="center">14.00</td>
+                        <td class="right">126.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="totals-container">
+            <div class="totals-table-wrapper">
+                <div class="line-with-dots" style="margin-bottom: 8px;"></div>
+                <table class="totals-table">
+                    <tr>
+                        <td class="label">Subtotal</td>
+                        <td class="value">430.00</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="notes-block">
+            <p class="text-red">* Above mentioned price is excluding VAT & Tax</p>
+            <p class="text-red">** Backend Platform: 5000/month backend per machine - <span style="font-weight: 400; opacity:0.8;">To Be Discussed</span></p>
+        </div>
+
+        <!-- Terms -->
+        <div class="mt-8">
+            <div class="font-serif terms-header">Terms & Conditions</div>
+            <ul class="terms-list">
+                <li>This quotation is valid for 30 days from the date of issue</li>
+                <li>Payment terms: 50% advance, 50% before delivery</li>
+                <li>Delivery timeline: 30-45 working days after order confirmation</li>
+                <li>Installation, training, and 1-year warranty included</li>
+                <li>Backend platform subscription starts from deployment date</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>For Support, Email: <span class="text-red">hello@sohub.com.bd</span> | Phone: <span class="text-red">+880 1922-036882</span></p>
+            <p>Machine by SOHUB - Building reliable machine infrastructure for Bangladesh</p>
+        </div>
+
+        <div class="powered-by">
+            Powered BY <span class="powered-by-logo">{...} sohub</span>
+        </div>
+    </div>
+</body>
+</html>

@@ -280,11 +280,11 @@ const SnackVendingPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <button
                             onClick={() => setMachineType("imported")}
-                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "imported" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                            className={`p-4 rounded-xl border transition-all text-left touch-manipulation ${machineType === "imported" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
                           >
                             <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "imported" ? "bg-accent border-accent" : "border-border"}`}>
-                                {machineType === "imported" && <div className="w-2 h-2 rounded-full bg-white" />}
+                              <div className={`w-5 h-5 min-w-[20px] rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "imported" ? "bg-accent border-accent" : "border-border"}`}>
+                                {machineType === "imported" && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
                               </div>
                               <span className="font-medium">Imported Chassis - (Chiller Supported)</span>
                             </div>
@@ -293,11 +293,11 @@ const SnackVendingPage = () => {
                           </button>
                           <button
                             onClick={() => setMachineType("local")}
-                            className={`p-4 rounded-xl border transition-all text-left ${machineType === "local" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                            className={`p-4 rounded-xl border transition-all text-left touch-manipulation ${machineType === "local" ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
                           >
                             <div className="flex items-center gap-3 mb-2">
-                              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "local" ? "bg-accent border-accent" : "border-border"}`}>
-                                {machineType === "local" && <div className="w-2 h-2 rounded-full bg-white" />}
+                              <div className={`w-5 h-5 min-w-[20px] rounded-full border-2 flex items-center justify-center transition-colors ${machineType === "local" ? "bg-accent border-accent" : "border-border"}`}>
+                                {machineType === "local" && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
                               </div>
                               <span className="font-medium">Local Build - (Chiller Not Supported)</span>
                             </div>
@@ -346,12 +346,12 @@ const SnackVendingPage = () => {
                             <motion.button
                               key={a.id}
                               onClick={() => toggleAddOn(a.id)}
-                              className={`w-full text-left p-4 rounded-xl border transition-all ${selectedAddOns.includes(a.id) ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
+                              className={`w-full text-left p-4 rounded-xl border transition-all touch-manipulation ${selectedAddOns.includes(a.id) ? "border-accent bg-accent/5 ring-1 ring-accent/20" : "border-border bg-card hover:border-accent/30"}`}
                               whileTap={{ scale: 0.995 }}
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${selectedAddOns.includes(a.id) ? "bg-accent border-accent" : "border-border"}`}>
+                                  <div className={`w-5 h-5 min-w-[20px] rounded-md border-2 flex items-center justify-center transition-colors ${selectedAddOns.includes(a.id) ? "bg-accent border-accent" : "border-border"}`}>
                                     {selectedAddOns.includes(a.id) && <Check size={12} className="text-white" />}
                                   </div>
                                   <div>

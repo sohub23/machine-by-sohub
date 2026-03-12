@@ -87,14 +87,24 @@ const Header = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (href: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setMobileOpen(false);
+    
     if (location.pathname !== "/") {
       window.location.href = "/" + href;
       return;
     }
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    
+    setTimeout(() => {
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
   };
 
   return (
@@ -123,26 +133,54 @@ const Header = () => {
                 <div className="grid grid-cols-3 gap-3">
                   {initiatives.map((initiative) => {
                     const isCurrentSite = initiative.id === 'machine' || initiative.name.toLowerCase().includes('machine');
-                    return initiative.href ? (
-                      <a
-                        key={initiative.id}
-                        href={initiative.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`flex items-center justify-center p-4 rounded-lg border ${
-                          isCurrentSite 
-                            ? 'border-accent bg-accent/10 ring-2 ring-accent/30' 
-                            : 'border-border'
-                        }`}
-                      >
-                        <img src={`https://sohub.netlify.app${initiative.logo}`} alt={initiative.name} className="w-full h-full object-contain" />
-                      </a>
-                    ) : (
-                      <div
-                        key={initiative.id}
-                        className="flex items-center justify-center p-4 rounded-lg border border-border opacity-50 cursor-not-allowed"
-                      >
-                        <img src={`https://sohub.netlify.app${initiative.logo}`} alt={initiative.name} className="w-full h-full object-contain" />
+                    const getInitiativeLogo = (initiative: Initiative) => {
+                      const logoPath = initiative.logo;
+                      const name = initiative.name.toLowerCase();
+
+                      // 1. Use API path if available (prefer sohub.com.bd)
+                      if (logoPath) {
+                        if (logoPath.startsWith('/api')) {
+                          return `https://sohub.com.bd${logoPath}`;
+                        }
+                        if (logoPath.startsWith('http')) {
+                          return logoPath;
+                        }
+                      }
+
+                      // 2. Fallbacks
+                      if (isCurrentSite) return "/logo/machine-by-sohub.png";
+                      return `https://sohub.com.bd${logoPath}`;
+                    };
+
+                    return (
+                      <div key={initiative.id}>
+                        {initiative.href ? (
+                          <a
+                            href={initiative.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-center p-4 rounded-lg border ${isCurrentSite
+                              ? "border-sohub-orange bg-sohub-orange/10 ring-2 ring-sohub-orange/30"
+                              : "border-border"
+                              }`}
+                          >
+                            <img
+                              src={getInitiativeLogo(initiative)}
+                              alt={initiative.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </a>
+                        ) : (
+                          <div
+                            className="flex items-center justify-center p-4 rounded-lg border border-border opacity-50 cursor-not-allowed"
+                          >
+                            <img
+                              src={getInitiativeLogo(initiative)}
+                              alt={initiative.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -175,8 +213,8 @@ const Header = () => {
             return (
               <button
                 key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className={`text-sm transition-colors px-3 py-2 rounded-full ${
+                onClick={(e) => handleNavClick(link.href, e)}
+                className={`text-sm transition-colors px-3 py-2 rounded-full touch-manipulation ${
                   isActive 
                     ? "text-accent bg-accent/10" 
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -230,8 +268,8 @@ const Header = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    onClick={() => handleNavClick(link.href)}
-                    className={`text-left text-base transition-colors py-2 px-3 rounded-lg ${
+                    onClick={(e) => handleNavClick(link.href, e)}
+                    className={`text-left text-base transition-colors py-3 px-4 rounded-lg touch-manipulation ${
                       isActive
                         ? "text-accent bg-accent/10"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"

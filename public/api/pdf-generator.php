@@ -128,14 +128,6 @@ function generateOrderPDF($name, $company, $phone, $email, $location, $notes, $m
     $pdf->SetFont('helvetica', '', 8);
     $pdf->MultiCell(0, 5, "• This quotation is valid for 30 days from the date of issue\n• Payment terms: 50% advance, 50% before delivery\n• Delivery timeline: 15-20 working days after order confirmation\n• Installation, training, and 1-year warranty included\n• Backend platform subscription starts from deployment date", 0, 'L');
     
-    if ($notes) {
-        $pdf->Ln(3);
-        $pdf->SetFont('helvetica', 'B', 9);
-        $pdf->Cell(0, 6, 'Additional Notes:', 0, 1);
-        $pdf->SetFont('helvetica', '', 8);
-        $pdf->MultiCell(0, 5, $notes, 0, 'L');
-    }
-    
     $pdf->Ln(10);
     $pdf->SetFont('helvetica', '', 7);
     $pdf->SetTextColor(100, 100, 100);
