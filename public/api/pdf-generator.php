@@ -94,11 +94,18 @@ function generateOrderPDF($name, $company, $phone, $email, $location, $notes, $m
     $pdf->Cell(50, 6, number_format($basePrice * $quantity), 1, 1, 'R');
     
     foreach ($addOns as $addon) {
-        $addonPrice = getAddonPrice($addon, $machineType);
-        if ($addonPrice > 0) {
+        // Get addon details from the name
+        $addonDetails = getAddonDetails($addon, $machineType);
+        
+        // Include all selected add-ons, even TBD ones
+        if ($addonDetails['price'] > 0) {
             $pdf->Cell(100, 6, '+ ' . $addon, 1, 0, 'L');
             $pdf->Cell(30, 6, $quantity, 1, 0, 'C');
-            $pdf->Cell(50, 6, number_format($addonPrice * $quantity), 1, 1, 'R');
+            $pdf->Cell(50, 6, number_format($addonDetails['price'] * $quantity), 1, 1, 'R');
+        } elseif ($addonDetails['price'] === 'TBD') {
+            $pdf->Cell(100, 6, '+ ' . $addon, 1, 0, 'L');
+            $pdf->Cell(30, 6, $quantity, 1, 0, 'C');
+            $pdf->Cell(50, 6, 'TBD', 1, 1, 'R');
         }
     }
     
@@ -139,15 +146,27 @@ function generateOrderPDF($name, $company, $phone, $email, $location, $notes, $m
     return $pdf->Output('', 'S');
 }
 
-function getAddonPrice($addonName, $machineType) {
-    $prices = [
-        'Built-in Chiller Unit' => 35000,
-        'POS Payment Module' => 25000,
-        'Touchscreen Display Upgrade' => 20000,
-        'Advanced Telemetry Kit' => 15000,
-        'Custom Branding Wrap' => 12000
+function getAddonDetails($addonName, $machineType) {
+    $addons = [
+        'Built-in Chiller Unit' => ['price' => 40000],
+        'Touchscreen Display Upgrade' => ['price' => 18000],
+        'POS Payment Module (EBL)' => ['price' => 10000],
+        'Cashless Payment Gateway Integration' => ['price' => 'TBD'],
+        'Inventory Management Service' => ['price' => 'TBD'],
+        'Custom Branding Wrap' => ['price' => 12000]
     ];
-    if ($machineType === 'local' && $addonName === 'Built-in Chiller Unit') return 0;
-    return $prices[$addonName] ?? 0;
+    
+    // Hide chiller for local builds
+    if ($machineType === 'local' && $addonName === 'Built-in Chiller Unit') {
+        return ['price' => 0];
+    }
+    
+    return $addons[$addonName] ?? ['price' => 0];
+}
+
+// Keep the old function for backward compatibility
+function getAddonPrice($addonName, $machineType) {
+    $details = getAddonDetails($addonName, $machineType);
+    return $details['price'];
 }
 ?>
