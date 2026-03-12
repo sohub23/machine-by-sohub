@@ -129,7 +129,7 @@ const Header = () => {
                   {dropdownOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[320px] p-3" sideOffset={5}>
+             <DropdownMenuContent align="end" className="w-[320px] p-3" sideOffset={5}>
                 <div className="grid grid-cols-3 gap-3">
                   {initiatives.map((initiative) => {
                     const isCurrentSite = initiative.id === 'machine' || initiative.name.toLowerCase().includes('machine');
