@@ -119,30 +119,58 @@ const Header = () => {
                   {dropdownOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[320px] p-3" sideOffset={5}>
+             <DropdownMenuContent align="end" className="w-[320px] p-3" sideOffset={5}>
                 <div className="grid grid-cols-3 gap-3">
                   {initiatives.map((initiative) => {
                     const isCurrentSite = initiative.id === 'machine' || initiative.name.toLowerCase().includes('machine');
-                    return initiative.href ? (
-                      <a
-                        key={initiative.id}
-                        href={initiative.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`flex items-center justify-center p-4 rounded-lg border ${
-                          isCurrentSite 
-                            ? 'border-accent bg-accent/10 ring-2 ring-accent/30' 
-                            : 'border-border'
-                        }`}
-                      >
-                        <img src={`https://sohub.netlify.app${initiative.logo}`} alt={initiative.name} className="w-full h-full object-contain" />
-                      </a>
-                    ) : (
-                      <div
-                        key={initiative.id}
-                        className="flex items-center justify-center p-4 rounded-lg border border-border opacity-50 cursor-not-allowed"
-                      >
-                        <img src={`https://sohub.netlify.app${initiative.logo}`} alt={initiative.name} className="w-full h-full object-contain" />
+                    const getInitiativeLogo = (initiative: Initiative) => {
+                      const logoPath = initiative.logo;
+                      const name = initiative.name.toLowerCase();
+
+                      // 1. Use API path if available (prefer sohub.com.bd)
+                      if (logoPath) {
+                        if (logoPath.startsWith('/api')) {
+                          return `https://sohub.com.bd${logoPath}`;
+                        }
+                        if (logoPath.startsWith('http')) {
+                          return logoPath;
+                        }
+                      }
+
+                      // 2. Fallbacks
+                      if (isCurrentSite) return "/logo/machine-by-sohub.png";
+                      return `https://sohub.com.bd${logoPath}`;
+                    };
+
+                    return (
+                      <div key={initiative.id}>
+                        {initiative.href ? (
+                          <a
+                            href={initiative.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-center p-4 rounded-lg border ${isCurrentSite
+                              ? "border-sohub-orange bg-sohub-orange/10 ring-2 ring-sohub-orange/30"
+                              : "border-border"
+                              }`}
+                          >
+                            <img
+                              src={getInitiativeLogo(initiative)}
+                              alt={initiative.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </a>
+                        ) : (
+                          <div
+                            className="flex items-center justify-center p-4 rounded-lg border border-border opacity-50 cursor-not-allowed"
+                          >
+                            <img
+                              src={getInitiativeLogo(initiative)}
+                              alt={initiative.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
