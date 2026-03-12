@@ -135,7 +135,7 @@ const SnackVendingPage = () => {
     setLoading(true);
     
     try {
-      const apiUrl = 'http://202.59.208.112/websites/machine-by-sohub/dist/api/send-order-email.php';
+      const apiUrl = '/api/send-order-email.php';
       
       const response = await fetch(apiUrl, {
         method: 'POST',
