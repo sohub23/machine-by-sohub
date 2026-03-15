@@ -212,7 +212,7 @@ $pdf->Ln(10);
 // Footer
 $pdf->SetFont('Arial', '', 8);
 $pdf->SetTextColor(51, 51, 51);
-$pdf->Cell(0, 4, 'For Support, Email: hello@sohub.com.bd | Phone: +880 1922-036882', 0, 1, 'C');
+$pdf->Cell(0, 4, 'For Support, Email: hello@sohub.com.bd', 0, 1, 'C');
 $pdf->Cell(0, 4, 'Machine by SOHUB - Building reliable machine infrastructure for Bangladesh', 0, 1, 'C');
 
 $pdfContent = $pdf->Output('S');
