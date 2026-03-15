@@ -16,7 +16,7 @@ const BASE_URL = 'https://sohub.com.bd';
 const API_URL = 'https://sohub.com.bd/api/initiatives.json';
 
 const isCurrentSite = (item: Initiative) =>
-    item.id === 'machine' || item.name.toLowerCase().includes('machine');
+    item.id === 'sohub' || item.name.toLowerCase().includes('sohub');
 
 /* ──────────────────────────────────────────────
    DESKTOP VERSION

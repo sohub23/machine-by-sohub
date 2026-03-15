@@ -110,9 +110,8 @@ const Header = () => {
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
       {/* Top bar */}
-      <div className={`bg-secondary/50 border-b border-border/50 transition-all duration-300 overflow-hidden ${
-        scrolled ? 'max-h-0 opacity-0' : 'max-h-20 opacity-100'
-      }`}>
+      <div className={`bg-secondary/50 transition-all duration-300 overflow-hidden ${scrolled ? "max-h-0 opacity-0" : "max-h-20 opacity-100 border-b border-border/50"
+          }`}>
         <div className="section-container py-0.5">
           <div className="flex items-center justify-between">
             <a href="https://sohub.com.bd/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
@@ -132,7 +131,7 @@ const Header = () => {
              <DropdownMenuContent align="end" className="w-[320px] p-3" sideOffset={5}>
                 <div className="grid grid-cols-3 gap-3">
                   {initiatives.map((initiative) => {
-                    const isCurrentSite = initiative.id === 'machine' || initiative.name.toLowerCase().includes('machine');
+                    const isCurrentSite = initiative.id === 'sohub' || initiative.name.toLowerCase().includes('sohub');
                     const getInitiativeLogo = (initiative: Initiative) => {
                       const logoPath = initiative.logo;
                       const name = initiative.name.toLowerCase();
