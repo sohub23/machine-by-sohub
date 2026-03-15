@@ -196,16 +196,11 @@ $pdf->SetTextColor(34, 34, 34);
 $pdf->Cell(0, 6, 'Terms & Conditions', 0, 1);
 $pdf->SetFont('Arial', '', 8);
 $pdf->SetTextColor(68, 68, 68);
-$pdf->Cell(5, 4, '', 0, 0);
-$pdf->Cell(0, 4, 'This quotation is valid for 30 days from the date of issue', 0, 1);
-$pdf->Cell(5, 4, '', 0, 0);
-$pdf->Cell(0, 4, 'Payment terms: 50% advance, 50% before delivery', 0, 1);
-$pdf->Cell(5, 4, '', 0, 0);
-$pdf->Cell(0, 4, 'Delivery timeline: 30-45 working days after order confirmation', 0, 1);
-$pdf->Cell(5, 4, '', 0, 0);
-$pdf->Cell(0, 4, 'Installation, training, and 1-year warranty included', 0, 1);
-$pdf->Cell(5, 4, '', 0, 0);
-$pdf->Cell(0, 4, 'Backend platform subscription starts from deployment date', 0, 1);
+$pdf->Cell(0, 4, '1. This quotation is valid for 30 days from the date of issue', 0, 1);
+$pdf->Cell(0, 4, '2. Payment terms: 50% advance, 50% before delivery', 0, 1);
+$pdf->Cell(0, 4, '3. Delivery timeline: 30-45 working days after order confirmation', 0, 1);
+$pdf->Cell(0, 4, '4. Installation, training, and 1-year warranty included', 0, 1);
+$pdf->Cell(0, 4, '5. Backend platform subscription starts from deployment date', 0, 1);
 
 $pdf->Ln(10);
 
